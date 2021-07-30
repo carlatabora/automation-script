@@ -1,0 +1,65 @@
+from psdi.mbo import SqlFormat
+
+from psdi.mbo import MboConstants
+
+from psdi.server import MXServer
+
+ 
+
+if (mbo != None and mbo.getString(“status”)==”CLOSE”):
+
+pstatusSet = mbo.getMboSet(“$MAXWOSTATUS”,”WOSTATUS”,”wonum = :wonum and siteid = :siteid and status != :status and changedate = (select max(m.changedate) from wostatus
+
+m where m.siteid = :siteid and m.wonum = :wonum and m.status != :status)”);
+
+pstatus = pstatusSet.getMbo(0)
+
+if (pstatus != None):
+
+p_status = pstatus.getString(“STATUS”);
+
+c_statusDate = MXServer.getMXServer().getDate();
+
+#set the status on the work order
+
+mbo.setValue(“status”, p_status,
+
+MboConstants.NOACCESSCHECK)
+
+mbo.setValue(“statusdate”, c_statusDate,
+
+MboConstants.NOACCESSCHECK)
+
+mbo.setValue(“historyFlag”, False,
+
+MboConstants.NOACCESSCHECK)
+
+ 
+
+#add a record in the status history table
+
+woStatusMboSet = mbo.getMboSet(“WOSTATUS”)
+
+woStatusMboSet.add(MboConstants.NOACCESSCHECK);
+
+woStatusMboSet.setValue(“memo”, “Reopen Closed Work
+
+Order”)
+
+woStatusMboSet.save()
+
+else:
+
+errorkey=”Cannot Reopen WO – Error – ” +
+
+mbo.getString(“WONUM”) + ” – ” + mbo.getString(“status”)
+
+errorgroup=” workorder”
+
+else:
+
+errorkey=”Cannot Reopen WO – Not Closed – ” +
+
+mbo.getString(“WONUM”) + ” – ” + mbo.getString(“status”)
+
+errorgroup=”workorder”
