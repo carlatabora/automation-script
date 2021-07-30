@@ -11,6 +11,6 @@ if app is not None:
                 current = MXServer.getMXServer().getDate()
                 val = mbo.getMboValue(index).getDate()
 
-                if val is not None 
+                if val is not None and val.before(current):
                          errorkey=”invalidDate”
                          errorgroup=”invoice”
