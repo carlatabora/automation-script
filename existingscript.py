@@ -8,6 +8,6 @@ if app is not None:
       for index in srcAttributes:
             current = MXServer.getMXServer().getDate()
             val = mbo.getMboValue(index).getDate()
-            if val is not None and val.
+            if val is not None and val.before(current):
                    errorkey=”invalidDate”
                    errorgroup=”invoice”
